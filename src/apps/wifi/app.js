@@ -141,7 +141,7 @@ exports.api_wifi_configure_handler = function( req, res ) {
     confentry = confentry.replace( "[ssid]", ssid );
     confentry = confentry.replace( "[password]", password );
     saveWifiConfigEntry( confentry );
-
+    saveCoordinate( zip );
     res.json( { status: "success" } );
     //res.write( confentry );
     //res.end();
@@ -168,6 +168,16 @@ var saveWifiConfigEntry = function( configdata ) {
 
     var result = fs.writeFileSync( wpa_config, conffiledata, 'utf8' );
 
+    return result;
+};
+
+var app_config = '/home/pi/weather/config.json'
+var saveCoordinate = function(zip){
+    config = fs.readFileSync( app_config, 'utf8' );
+    config = JSON.parse( config );
+    config.zip = zip;
+    var outputData = JSON.stringify(config, null, 4);
+    var result = fs.writeFileSync( app_config, outputData, 'utf8' );
     return result;
 };
 

@@ -222,15 +222,15 @@ var saveClick = function() {
             if ( data.status === "success" ) {
                 $('#wifi_form').hide();
                 $('#rebooting_form').show();
-                $('#rebooting_form .submit').addClass('disabled').text('Your Coder is restarting.');
+                $('#rebooting_form .submit').addClass('disabled').text('Your device is restarting.');
                 $.post(
                     appurl + '/api/reboot',
                     function( data ) {
                         //TODO: we should be doing some kind of polling here to determine if we can connect to coder
                         setTimeout( function() {
-                            $('#rebooting_form .submit').removeClass('disabled').text('Reconnect to coder.local');
+                            $('#rebooting_form .submit').removeClass('disabled').text('Reconnect to raincheck.local');
                             $('#rebooting_form .submit').click( function() {
-                                window.location.href="https://coder.local/";
+                                window.location.href="https://raincheck.local/";
                             });
                         }, 60 * 1000 );
                     }
