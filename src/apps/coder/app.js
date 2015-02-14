@@ -37,6 +37,7 @@ exports.settings={};
 //settings.appurl - base url path to this app /app/appname
 //settings.device_name
 //settings.coder_owner
+//settings.coder_color
 
 exports.get_routes = [
     { path:'/', handler:'index_handler' },
@@ -60,6 +61,7 @@ exports.index_handler = function( req, res ) {
     tmplvars['app_name'] = exports.settings.appname;
     tmplvars['app_url'] = exports.settings.appurl;
     tmplvars['device_name'] = exports.settings.device_name;
+    tmplvars['coder_color'] = exports.settings.coder_color;
     tmplvars['coder_owner'] = exports.settings.coder_owner;
 
     res.render( exports.settings.viewpath + '/index', tmplvars );

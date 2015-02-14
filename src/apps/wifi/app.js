@@ -171,11 +171,13 @@ var saveWifiConfigEntry = function( configdata ) {
     return result;
 };
 
-var app_config = '/home/pi/weather/config.json'
+var app_config = '/home/weather/config.json'
 var saveCoordinate = function(zip){
     config = fs.readFileSync( app_config, 'utf8' );
     config = JSON.parse( config );
     config.zip = zip;
+    config.lat = "";
+    config.lng = "";
     var outputData = JSON.stringify(config, null, 4);
     var result = fs.writeFileSync( app_config, outputData, 'utf8' );
     return result;
@@ -262,6 +264,7 @@ exports.index_handler = function( req, res ) {
     tmplvars['app_name'] = exports.settings.appname;
     tmplvars['app_url'] = exports.settings.appurl;
     tmplvars['device_name'] = exports.settings.device_name;
+    tmplvars['hostname'] = exports.settings.hostname;
     tmplvars['page_mode'] = "selectwifi";
 
     res.render( exports.settings.viewpath + '/index', tmplvars );

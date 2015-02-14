@@ -28,7 +28,8 @@ var device_settings = {
     password_hash: '',
     device_name: '',
     hostname: '',
-    coder_owner: ''
+    coder_owner: '',
+    coder_color: '#3e3e3e'
 };
 
 
@@ -97,6 +98,9 @@ exports.getDeviceName = function() {
 };
 exports.getCoderOwner = function() {
     return device_settings.coder_owner;
+};
+exports.getCoderColor = function() {
+    return device_settings.coder_color;
 };
 
 exports.authenticate = function( req, password ) {
@@ -186,7 +190,11 @@ exports.api_devicename_get_handler = function( req, res ) {
         device_name: exports.getDeviceName()
     });
 };
-
+exports.api_codercolor_get_handler = function( req, res ) {
+    res.json({
+        coder_color: exports.getCoderColor()
+    });
+};
 exports.api_coderowner_get_handler = function( req, res ) {
     //only allow this step if they are authenticated or have not yet set a password
     if ( !exports.isAuthenticated(req) && exports.hasPassword() ) {
@@ -280,6 +288,43 @@ exports.api_coderowner_set_handler = function( req, res ) {
     
 };
 
+exports.api_codercolor_set_handler = function( req, res ) {
+
+    //only allow this step if they are authenticated or have not yet set a password
+    if ( !exports.isAuthenticated(req) && exports.hasPassword() ) {
+        res.json({
+            status: "error",
+            error: "not authenticated"
+        });
+        return;
+    }
+
+    var color = req.param('coder_color');
+    if ( typeof color === 'undefined' || !isValidColor( color ) ) {
+        res.json({
+            status: 'error', 
+            error: "invalid color" 
+        });
+        return;
+    }
+
+    device_settings.coder_color = color;
+    
+    err = saveDeviceSettings();
+
+    if ( !err ) {
+        res.json({
+            status: "success",
+            coder_color: device_settings.coder_color
+        });
+    } else {
+        res.json({
+            status: "error",
+            error: "could not save device settings"
+        });
+    }
+    
+};
 
 exports.api_addpassword_handler = function( req, res ) {
 
@@ -493,7 +538,8 @@ var reloadDeviceSettings = function() {
         password_hash: '',
         device_name: '',
         hostname: '',
-        coder_owner: ''
+        coder_owner: '',
+        coder_color: ''
     };
     
     var loadedsettings = JSON.parse(fs.readFileSync( process.cwd() + "/device.json", 'utf-8' ));
@@ -501,6 +547,7 @@ var reloadDeviceSettings = function() {
     settings.device_name = ( typeof loadedsettings.device_name !== 'undefined' && loadedsettings.device_name !== '' ) ? loadedsettings.device_name : settings.device_name;
     settings.hostname = ( typeof loadedsettings.hostname !== 'undefined' && loadedsettings.hostname !== '' ) ? loadedsettings.hostname : settings.hostname;
     settings.coder_owner = ( typeof loadedsettings.coder_owner !== 'undefined' && loadedsettings.coder_owner !== '' ) ? loadedsettings.coder_owner : settings.coder_owner;
+    settings.coder_color = ( typeof loadedsettings.coder_color !== 'undefined' && loadedsettings.coder_color !== '' ) ? loadedsettings.coder_color : settings.coder_color;
     
     device_settings = settings;
 }

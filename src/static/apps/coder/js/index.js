@@ -195,6 +195,27 @@ var enableSettings = function( on ) {
 };
 
 
+var activateCurrentCoderColor = function() {
+    var current = coder_color;
+    $("#coder_nav").css('background-color', current);
+    $("#settingscontainer .colorchit").each( function() {
+        $this = $(this);
+        $this.removeClass('active');
+    
+        if ( rgb2hex($this.css('background-color')) === current ) {
+            $this.addClass('active');
+        }
+    });
+    
+};
+
+var selectCoderColor = function() {
+    $this = $(this);
+    $("#settingscontainer .colorchit").removeClass('active');
+    $this.addClass('active');
+    checkChangedSettings();
+};
+
 var device_changed = false;
 var owner_changed = false;
 var color_changed = false;
@@ -202,12 +223,17 @@ var checkChangedSettings = function() {
     var changed = false;
     device_changed = false;
     owner_changed = false;
+    color_changed = false;
     
     if ( $('#coder_name').val() !== device_name ) {
         changed = device_changed = true;
     }
     if ( $('#coder_ownername').val() !== coder_owner ) {
         changed = owner_changed = true;
+    }
+    var $selectedcolor = $("#settingscontainer .colorchit.active").first();
+    if ( $selectedcolor.get(0) && rgb2hex($selectedcolor.css('background-color')) !== coder_color.toLowerCase() ) {
+        changed = color_changed = true;
     }
     
     if ( changed ) {
@@ -254,6 +280,31 @@ var saveSettings = function() {
         );
     };
 
+    var saveCoderColor = function(callback) {
+        if ( !color_changed ) {
+            callback();
+            return;
+        }
+        var $selectedcolor = $("#settingscontainer .colorchit.active").first();
+        if ( !$selectedcolor.get(0) ) {
+            callback();
+            return;
+        }
+        var hexcolor = rgb2hex($selectedcolor.css('background-color'));
+        
+        
+        $.post('/app/auth/api/codercolor/set',
+            { 'coder_color': hexcolor },
+            function(d) {
+                //console.log( d );
+                if ( d.status === 'success' ) {
+                    coder_color = d.coder_color;
+                    $("#coder_nav").css('background-color', coder_color);
+                }
+                callback();
+            }
+        );
+    };
 
     saveDeviceName(function() {
         saveOwnerName(function() {

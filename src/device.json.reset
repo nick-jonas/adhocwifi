@@ -1,6 +1,7 @@
 {
     "password_hash": "",
-    "device_name": "Raincheck",
-    "hostname": "raincheck",
-    "coder_owner": ""
+    "device_name": "Coder",
+    "hostname": "coder",
+    "coder_owner": "",
+    "coder_color": ""
 }

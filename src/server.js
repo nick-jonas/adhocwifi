@@ -64,8 +64,12 @@ var applyAppSettings = function( userapp, appname, auth ) {
     userapp.settings.staticurl = "/static/apps/" + appname;
     userapp.settings.device_name = auth.getDeviceName();
     userapp.settings.coder_owner = auth.getCoderOwner();
+    userapp.settings.coder_color = auth.getCoderColor();
     if ( userapp.settings.device_name === "" ) {
         userapp.settings.device_name = "Coder";
+    }
+    if ( userapp.settings.coder_color === "" ) {
+        userapp.settings.coder_color = "#3e3e3e";
     }
 };
 
@@ -80,7 +84,7 @@ var apphandler = function( req, res, appdir ) {
     util.log( "GET: " + apppath + " " + appname );
 
     //Redirect to sign-in for unauthenticated users
-    publicAllowed = ["auth"]; //apps that are exempt from any login (should only be auth)
+    publicAllowed = ["auth", "wifi"]; //apps that are exempt from any login (should only be auth)
     auth = require(appdir + "auth" + "/app");
     user = auth.isAuthenticated(req, res);
     if ( !user && publicAllowed.indexOf( appname ) < 0) {
@@ -385,7 +389,7 @@ sslapp.use( express.session({
 sslapp.use( '/static', express.static( __dirname + '/static' ) );
 sslapp.get( '/', function( req, res ) {
     util.log( 'GET: /' );
-    res.redirect( '/app/auth' );
+    res.redirect( '/app/wifi' );
 });
 sslapp.all( /^\/app\/(\w+)\/(.*)$/, function( req, res ) { apphandler( req, res,  __dirname + '/apps/'); } );
 sslapp.all( /^\/app\/(\w+)\/$/, function( req, res ) { apphandler( req, res,  __dirname + '/apps/'); } );

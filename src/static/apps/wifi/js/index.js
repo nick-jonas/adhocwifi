@@ -220,6 +220,7 @@ var saveClick = function() {
         },
         function( data ) {
             if ( data.status === "success" ) {
+                var hostname = $('body').attr('data-hostname');
                 $('#wifi_form').hide();
                 $('#rebooting_form').show();
                 $('#rebooting_form .submit').addClass('disabled').text('Your device is restarting.');
@@ -228,10 +229,10 @@ var saveClick = function() {
                     function( data ) {
                         //TODO: we should be doing some kind of polling here to determine if we can connect to coder
                         setTimeout( function() {
-                            $('#rebooting_form .submit').removeClass('disabled').text('Reconnect to raincheck.local');
-                            $('#rebooting_form .submit').click( function() {
-                                window.location.href="https://raincheck.local/";
-                            });
+                            $('#rebooting_form .submit').removeClass('disabled').text('Let there be light!');
+                            // $('#rebooting_form .submit').click( function() {
+                            //     window.location.href="https://" + hostname + ".local/";
+                            // });
                         }, 60 * 1000 );
                     }
                 );
